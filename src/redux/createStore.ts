@@ -5,22 +5,31 @@ import {
 } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
-import countModule from './modules/countModule';
+import countModule, {
+  initialState as countInitialState
+} from './modules/countModule';
 import rootSaga from './middleware/rootSaga';
 
 const rootReducer = combineReducers({
   count: countModule.reducer
 });
 
+export const preloadedState = () => {
+  return {
+    count: countInitialState
+  };
+};
+
 const sagaMiddleWare = createSagaMiddleware();
 
-const createStore = () => {
+const createStore = (preloadedStateFunc: Function) => {
   const middlewareList = [...getDefaultMiddleware(), logger, sagaMiddleWare];
 
   const store = configureStore({
     reducer: rootReducer,
     middleware: middlewareList,
-    devTools: process.env.NODE_ENV !== 'production'
+    devTools: process.env.NODE_ENV !== 'production',
+    preloadedState: preloadedStateFunc()
   });
 
   sagaMiddleWare.run(rootSaga);

@@ -5,7 +5,7 @@ export type CountState = {
   count: number;
 };
 
-const initialState: CountState = {
+export const initialState: CountState = {
   count: 0
 };
 
